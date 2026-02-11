@@ -48,6 +48,15 @@ Username for auth. Default is `user`.
 
 Password for auth. Default is `password`.
 
+## Route Configuration
+
+This proxy supports two types of routes:
+
+- **`/api/` routes**: These routes are accessible without basic authentication, allowing API endpoints to be called directly.
+- **All other routes (`/`)**: These routes require basic authentication for access.
+
+**Security Note**: The `/api/` routes forward cookies and session headers to the backend. Ensure your backend API endpoints implement their own authentication if needed (e.g., API keys, tokens).
+
 ## References
 
 1. [Simple HTML App with NGNIX Docker container doesn't run on Railway.app - Application failed to respond (error-503)](https://stackoverflow.com/questions/76348107/simple-html-app-with-ngnix-docker-container-doesnt-run-on-railway-app-applica)
