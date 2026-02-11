@@ -30,6 +30,19 @@ for ((i = 0; i < ${#server_name_array[@]}; i++)); do
       listen ${PORT};
       server_name ${server_name_array[$i]};
 
+      # API routes - NO basic auth
+      location /api/ {
+          proxy_set_header X-Real-IP \$remote_addr;
+          proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+          proxy_set_header Host \$http_host;
+          proxy_set_header X-Nginx-Proxy true;
+          proxy_set_header Cookie \$http_cookie;
+          proxy_pass_header Set-Cookie;
+          proxy_http_version 1.1;
+          proxy_pass ${proxy_pass_array[$i]};
+      }
+
+      # All other routes - WITH basic auth
       location / {
           auth_basic \"Restricted\";
           auth_basic_user_file /etc/nginx/.htpasswd;
@@ -38,6 +51,8 @@ for ((i = 0; i < ${#server_name_array[@]}; i++)); do
           proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
           proxy_set_header Host \$http_host;
           proxy_set_header X-Nginx-Proxy true;
+          proxy_set_header Cookie \$http_cookie;
+          proxy_pass_header Set-Cookie;
           proxy_http_version 1.1;
           proxy_pass ${proxy_pass_array[$i]};
       }
